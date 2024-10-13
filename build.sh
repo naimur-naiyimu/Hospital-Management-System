@@ -4,6 +4,7 @@ set -o errexit
 
 mkdir -p /opt/render/project/src/logs  # Create logs directory
 pip install -r requirements.txt
+pip install whitenoise
 python manage.py collectstatic
 python manage.py migrate
 if [[ $CREATE_SUPERUSER ]]; then
