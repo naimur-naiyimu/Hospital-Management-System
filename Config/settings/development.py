@@ -19,7 +19,8 @@ ALLOWED_HOSTS = ['*', ]
 #         'ATOMIC_REQUESTS': True,
 #     }
 # }
-WSGI_APPLICATION = 'hms.wsgi.application'
+WSGI_APPLICATION = 'Config.wsgi.application'
+
 
 DATABASES = {
     'default': {
