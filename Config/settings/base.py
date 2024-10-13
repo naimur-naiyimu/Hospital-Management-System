@@ -58,7 +58,20 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Config.urls'
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+from whitenoise.storage import CompressedManifestStaticFilesStorage
+
+class CustomCompressedManifestStaticFilesStorage(CompressedManifestStaticFilesStorage):
+    def post_process(self, paths, dry_run=False, **options):
+        # Call the parent method and catch any MissingFileError
+        try:
+            return super().post_process(paths, dry_run, **options)
+        except MissingFileError:
+            # Log the missing file error or ignore it
+            return []
+
+# Then, set this custom storage in your settings
+STATICFILES_STORAGE = 'path.to.CustomCompressedManifestStaticFilesStorage'
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
