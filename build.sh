@@ -9,6 +9,8 @@ mkdir -p /opt/render/project/src/logs
 
 # Install dependencies
 pip install -r requirements.txt
+pip install whitenoise
+python manage.py collectstatic --clear
 
 # Collect static files
 echo "Collecting static files..."
@@ -17,7 +19,7 @@ echo "Static files collected."
 
 # Remove any lingering .map files (optional)
 find /opt/render/project/src/staticfiles -name "*.map" -delete
-pip install whitenoise
+
 
 # Apply migrations
 python manage.py migrate
