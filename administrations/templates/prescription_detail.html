@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block title %}Prescription Detail{% endblock %}
+
+{% block content %}
+<h1>Prescription Detail</h1>
+
+<p><strong>Patient:</strong> <a href="{% url 'patient:patient-detail' pk=prescription.patient.pk %}">{{ prescription.patient.full_name }}</a></p>
+<p><strong>Doctor:</strong> <a href="{% url 'staff:doctor-detail' pk=prescription.doctor.pk %}">{{ prescription.doctor.full_name }}</a></p>
+<p><strong>Issue Date:</strong> {{ prescription.issue_date }}</p>
+<p><strong>Next Appointment Date:</strong> {{ prescription.next_appointment_date }}</p>
+<p><strong>Medication:</strong> {{ prescription.medication }}</p>
+<p><strong>Dosage:</strong> {{ prescription.dosage }}</p>
+<p><strong>Test:</strong> {{ prescription.test }}</p>
+<p><strong>Instructions:</strong> {{ prescription.instructions }}</p>
+<p><strong>Reviewed:</strong> {% if prescription.is_reviewed %}Yes{% else %}No{% endif %}</p>
+
+<a href="{% url 'administrations:edit-prescription' prescription_id=prescription.id %}" class="btn btn-primary">Edit Prescription</a>
+<a href="{% url 'administrations:delete-prescription' prescription_id=prescription.id %}" class="btn btn-danger">Delete Prescription</a>
+<!-- <a href="{% url 'administrations:prescription-list'  %}" class="btn btn-secondary ">Back to Prescription List</a> -->
+{% endblock %}

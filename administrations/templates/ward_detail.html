@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+{% block title %}Ward Detail{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card mt-5">
+        <div class="card-header">
+          <h3 class="card-title">Ward Detail</h3>
+        </div>
+        <div class="card-body">
+          <table class="table table-bordered">
+            <tbody>
+              <tr>
+                <th>Department Name:</th>
+                <td>{{ ward.department_name }}</td>
+              </tr>
+              <tr>
+                <th>Head of Department:</th>
+                <td>{{ ward.head_of_department }}</td>
+              </tr>
+              <tr>
+                <th>Contact Number:</th>
+                <td>{{ ward.contact_number }}</td>
+              </tr>
+              <tr>
+                <th>Ward Number:</th>
+                <td>{{ ward.ward_number }}</td>
+              </tr>
+              <tr>
+                <th>Ward Type:</th>
+                <td>{{ ward.get_type_display }}</td>
+              </tr>
+              <tr>
+                <th>Capacity:</th>
+                <td>{{ ward.capacity }}</td>
+              </tr>
+              <tr>
+                <th>Occupancy:</th>
+                <td>{{ ward.occupancy }}</td>
+              </tr>
+              <tr>
+                <th>Available Beds:</th>
+                <td>{{ ward.available_beds }}</td>
+              </tr>
+            </tbody>
+          </table>
+          <a href="{% url 'administrations:ward_update' ward.pk %}" class="btn btn-primary">Edit</a>
+          <a href="{% url 'administrations:ward_delete' ward.pk %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this ward?')">Delete</a>
+          <a href="{% url 'administrations:ward_list' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+  <!-- Content Header (Page header) -->
+  <div class="content-header">
+    <div class="container-fluid">
+      <div class="row mb-2">
+        <div class="col-sm-6">
+          <h1 class="m-0">Dashboard</h1>
+        </div><!-- /.col -->
+        <div class="col-sm-6">
+          <ol class="breadcrumb float-sm-right">
+            <li class="breadcrumb-item"><a href="#">Home</a></li>
+            <li class="breadcrumb-item active">Dashboard v1</li>
+          </ol>
+        </div><!-- /.col -->
+      </div><!-- /.row -->
+    </div><!-- /.container-fluid -->
+  </div>
+  <!-- /.content-header -->
+
+  <!-- Main content -->
+  <section class="content">
+    <div class="container-fluid ml-2">
+      <!-- Small boxes (Stat box) -->
+      <div class="row">
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <!-- small box 1 -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3>{{ doctors_count }}</h3>
+              <p>Doctors</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-user-md"></i>
+            </div>
+            <a href="staff/doctor" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <!-- small box 2 -->
+          <div class="small-box bg-warning">
+            <div class="inner">
+              <h3>{{ patients_count }}</h3>
+              <p>Patients</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-procedures"></i>
+            </div>
+            <a href="patient/" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <!-- small box 2 -->
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>{{ staffs_count }}</h3>
+              <p>Staff</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-user"></i>
+            </div>
+            <a href="/staff/list" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <!-- small box 3 -->
+          <div class="small-box bg-secondary">
+            <div class="inner">
+              <h3>{{ wards_count }}</h3>
+              <p>Wards</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-hospital"></i>
+            </div>
+            <a href="/ward" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <!-- small box 4 -->
+          <div class="small-box bg-success">
+            <div class="inner">
+              <h3>{{ appointments_count }}</h3>
+              <p>Appointments</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-calendar-alt"></i>
+            </div>
+            <a href="/appointment" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+        <div class="col-lg-3 col-md-6 col-sm-12">
+          <!-- small box 2 -->
+          <div class="small-box bg-danger">
+            <div class="inner">
+              <h3>{{ prescriptions_count }}</h3>
+              <p>Prescriptions</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-file-prescription"></i>
+            </div>
+            <a href="/prescriptions" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <!-- ./col -->
+      </div>
+      <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+  </section>
+  <!-- /.content -->
+{% endblock %}

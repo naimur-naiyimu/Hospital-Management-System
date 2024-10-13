@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Medical Reports{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <h1>Medical Reports</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <form action="{% url 'administrations:medical-report-list' %}" method="GET">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control" placeholder="Search by patient name, doctor name, or report date" name="search">
+            <button class="btn btn-primary" type="submit">Search</button>
+          </div>
+        </form>
+      </div>
+      <div class="col-md-6 text-right">
+        <a href="{% url 'administrations:add-medical-report' %}" class="btn btn-success">Add New Medical Report</a>
+      </div>
+    </div>
+    <table class="table table-striped table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          <th>Patient</th>
+          <th>Test Name</th>
+          <th>Test Date</th>
+          <th>Delivery Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for medical_report in medical_reports %}
+          <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ medical_report.patient.full_name }}</td>
+            <td>{{ medical_report.test_name }}</td>
+            <td>{{ medical_report.test_date }}</td>
+            <td>{{ medical_report.delivery_date }}</td>
+            <td>{{ medical_report.report_date }}</td>
+            <td>
+            <a href="{% url 'administrations:medical-report-detail' report_id=medical_report.id %}" class="btn btn-sm btn-primary">View Details</a>
+            <a href="{% url 'administrations:edit-medical-report' report_id=medical_report.id %}" class="btn btn-sm btn-warning">Edit</a>
+            <a href="{% url 'administrations:delete-medical-report' report_id=medical_report.id%}" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this report?')">Delete</a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="5">No medical reports available.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% if medical_reports.has_previous or medical_reports.has_next %}
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if medical_reports.has_previous %}
+                        <a href="?page=1" class="prev-page"> &lt;&lt; </a>
+                        <a href="?page={{ medical_reports.previous_page_number }}" class="prev-page"> &lt; </a>
+                    {% endif %}
+                    
+                    <span class="current-page">{{ medical_reports.number }}</span>
+                    
+                    {% if medical_reports.has_next %}
+                        <a href="?page={{ medical_reports.next_page_number }}" class="next-page"> &gt; </a>
+                        <a href="?page={{ medical_reports.paginator.num_pages }}" class="next-page"> &gt;&gt; </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+  </div>
+  {% endif %}
+
+  </div>
+{% endblock %}

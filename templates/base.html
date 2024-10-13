@@ -1,0 +1,397 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Your Page Title{% endblock %}</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="{% static 'plugins/fontawesome-free/css/all.min.css' %}">
+  <!-- Ionicons -->
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- Tempusdominus Bootstrap 4 -->
+  <link rel="stylesheet" href="{% static 'plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css' %}">
+  <!-- iCheck -->
+  <link rel="stylesheet" href="{% static 'plugins/icheck-bootstrap/icheck-bootstrap.min.css' %}">
+  <!-- JQVMap -->
+  <link rel="stylesheet" href="{% static 'plugins/jqvmap/jqvmap.min.css' %}">
+  <!-- Theme style -->
+  <link rel="stylesheet" href="{% static 'dist/css/adminlte.min.css' %}">
+  <!-- overlayScrollbars -->
+  <link rel="stylesheet" href="{% static 'plugins/overlayScrollbars/css/OverlayScrollbars.min.css' %}">
+  <!-- Daterange picker -->
+  <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}">
+  <!-- summernote -->
+  <link rel="stylesheet" href="{% static 'plugins/summernote/summernote-bs4.min.css' %}">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.8/js/select2.min.js" defer></script>
+  
+  
+  {% comment %} <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> {% endcomment %}
+
+  
+</head>
+
+</head>
+<body class="hold-transition sidebar-mini">
+<div class="wrapper d-flex flex-column">
+
+  <!-- Navbar -->
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links -->
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+      </li>
+    </ul>
+
+    <!-- Right navbar links -->
+    <ul class="navbar-nav ml-auto">
+      <li class="nav-item dropdown">
+      <li class="nav-item">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+          <i class="fas fa-expand-arrows-alt"></i>
+        </a>
+      </li>
+      {% if user.is_authenticated %}
+      <li class="nav-item dropdown">
+          <a class="nav-link" data-toggle="dropdown" href="#">
+              {% if user.user_type == 0 or user.is_superuser%}
+                  Admin {{ user.name }}
+              {% elif user.user_type == 1 %}
+                  Dr. {{ user.name }}
+              {% elif user.user_type == 2 %}
+                  {% if user.gender == 0 %}
+                      Mr. {{ user.name }}
+                  {% else %}
+                      Miss {{ user.name }}
+                  {% endif %}
+              {% endif %}
+              <i class="far fa-user"></i>
+          </a>
+          <!-- <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+              Dropdown menu items ...
+          </div>  -->
+      </li>
+      <li class="nav-item">
+          <a href="{% url 'logout' %}" class="nav-link">Logout</a>
+      </li>
+       {% else %}
+      <li class="nav-item">
+          <a href="{% url 'login' %}" class="nav-link">Login</a>
+      </li>
+      <li class="nav-item">
+          <a href="{% url 'register' %}" class="nav-link">Register</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  <!-- /.navbar -->
+
+  <!-- Main Sidebar Container -->
+  <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <!-- Brand Logo -->
+    <a href="index3.html" class="brand-link">
+      <img src="{% static 'img/AdminLTELogo.png' %}" alt="Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <span class="brand-text font-weight-light">HMS</span>
+    </a>
+
+
+    <!-- Sidebar -->
+    <div class="sidebar active">
+      <!-- Sidebar user panel (optional) -->
+      {% comment %} <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+        <div class="image">
+          <img src="{% static 'img/user2-160x160.jpg' %}" class="img-circle elevation-2" alt="User Image">
+        </div>
+        <div class="info">
+          <a href="#" class="d-block">{{ request.user.name }}</a>
+        </div>
+      </div> {% endcomment %}
+
+      <!-- Sidebar Menu -->
+      <nav class="mt-2">
+        {% comment %} {% if user.user_type == 0%} {% endcomment %}
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            {% if user.user_type == 1 %}
+            {% if user.doctor.pk %}
+              <a href="{% url 'staff:doctor-detail' pk=user.doctor.pk %}"class="nav-link"><i class="nav-icon fas fa-tachometer-alt"></i><p>Dashboard</p></a>
+            {% endif %}
+
+            {% elif user.user_type == 2 %}
+
+            {% if user.patient.pk %}
+              <a href="{% url 'patient:patient-detail' pk=user.patient.pk %}" class="nav-link"><i class="nav-icon fas fa-tachometer-alt"></i><p>Dashboard</p></a>
+            {% endif %}
+
+            {% elif user.user_type == 0 or user.is_superuser %}
+              <a href="/" class="nav-link"><i class="nav-icon fas fa-tachometer-alt"></i><p>Dashboard</p></a>
+            {% endif %}
+         </li>
+        </ul>
+        {% comment %} {% endif %} {% endcomment %}
+        {% if user.user_type == 0 or user.is_superuser %}
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="/staff/doctor" class="nav-link">
+              <i class="nav-icon fas fa-th"></i>
+              <p>
+                Doctor
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/staff/doctor/create" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New Doctor</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/staff/doctor" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Doctor List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        {% endif %}
+        {% if user.user_type == 0 or user.is_superuser or user.user_type == 1%}
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="/patient" class="nav-link">
+              <i class="nav-icon fas fa-copy"></i>
+              <p>
+                Patient
+                <i class="fas fa-angle-left right"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              {% if user.user_type == 0 or user.is_superuser %}
+              <li class="nav-item">
+                <a href="/patient/create" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New Patient</p>
+                </a>
+              </li>
+              {% endif %}
+              <li class="nav-item">
+                <a href="/patient" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Patient List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      {% endif %}
+        {% if user.user_type == 0 or user.is_superuser %}
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="/staff" class="nav-link">
+              <i class="nav-icon fas fa-tree"></i>
+              <p>
+                Staff
+                <i class="fas fa-angle-left right"></i>
+                <!-- <span class="badge badge-info right">6</span> -->
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="/staff/create" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New Sttaf</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="/staff/list" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Staff List</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        
+
+
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="/appointment" class="nav-link">
+              <i class="nav-icon fas fa-edit"></i>
+              <p>
+                Appointment
+              </p>
+            </a>
+          </li>
+        </ul>
+
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="{% url 'administrations:ward_list' %}" class="nav-link">
+              <i class="nav-icon fas fa-columns"></i>
+              <p>
+                Ward
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'administrations:ward_list' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View Wards</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'administrations:bed_list' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>View Beds</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'administrations:ward_create' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add New Ward</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nnav-icon fas fa-edit"></i>
+              <p>
+                Prescriptions
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'administrations:prescription-list' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Prescription List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'administrations:add-prescription' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Prescriptions Add</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+        
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nnav-icon fas fa-edit"></i>
+              <p>
+                Medical Reports
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'administrations:medical-report-list' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Report List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'administrations:add-medical-report' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Add Medical Report</p>
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+
+        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+          <li class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="nnav-icon fas fa-edit"></i>
+              <p>
+                Invoice
+                <i class="right fas fa-angle-left"></i>
+              </p>
+            </a>
+            <ul class="nav nav-treeview">
+              <li class="nav-item">
+                <a href="{% url 'administrations:invoice_list' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Invoice List</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="{% url 'administrations:select-patient-for-invoice' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Create Invoice</p>
+                </a>
+              </li>
+              {% comment %} <li class="nav-item">
+                <a href="{% url 'administrations:customize-invoice' %}" class="nav-link">
+                  <i class="far fa-circle nav-icon"></i>
+                  <p>Create Customize Invoice</p>
+                </a>
+              </li> {% endcomment %}
+            </ul>
+          </li>
+        </ul>
+        {% endif %}
+      </nav>
+      <!-- /.sidebar-menu -->
+    </div>
+    <!-- /.sidebar -->
+  </aside>
+  <!-- /.main-sidebar -->
+ 
+  <!-- Content Wrapper. Contains page content -->
+  <div class="content-wrapper ">
+    <!-- Main content -->
+    <div class="content responsive">
+      <div class="container-fluid">
+        <!-- Add your page content here -->
+        {% block content %}
+        {% endblock %}
+      </div>
+      <!-- /.container-fluid -->
+    </div>
+    <!-- /.content -->
+  </div>
+  <!-- /.content-wrapper -->
+
+  <!-- Main Footer -->
+  <footer class="main-footer text-center">
+    <strong>Copyright &copy; 2024 <a href="https://www.linkedin.com/in/naimur-naiyimu/">Naimur Rahman</a>.</strong>
+    All rights reserved.
+  </footer>
+</div>
+<!-- ./wrapper -->
+
+<!-- REQUIRED SCRIPTS -->
+
+<!-- jQuery -->
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<!-- Bootstrap -->
+<script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<!-- AdminLTE -->
+<script src="{% static 'js/adminlte.js' %}"></script>
+
+<!-- OPTIONAL SCRIPTS -->
+<script src="{% static 'plugins/chart.js/Chart.min.js' %}"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="{% static 'js/demo.js' %}"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="{% static 'js/pages/dashboard3.js' %}"></script>
+
+
+</body>
+</html>

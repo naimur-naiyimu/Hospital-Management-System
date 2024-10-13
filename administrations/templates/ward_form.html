@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}
+  {% if update %}
+    Update Ward
+  {% else %}
+    Create Ward
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <section class="vh-80 gradient-custom">
+    <div class="container py-2 h-100">
+      <div class="row justify-content-center align-items-center h-100">
+        <div class="col-12 col-lg-7 col-xl-8">
+          <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+            <div class="card-body p-4 p-md-4">
+              <h3 class="mb-4 pb-2 pb-md-0 mb-md-4">{% if update %}Update Ward{% else %}Create Ward{% endif %}</h3>
+              <form method="post" action="{% if update %}{% url 'administrations:ward_update' pk=ward.pk %}{% else %}{% url 'administrations:ward_create' %}{% endif %}">
+                {% csrf_token %}
+                <!-- Display form fields as paragraphs (p) -->
+                {{ form.as_p }}
+                <div class="mt-4 pt-2">
+                  <button class="btn btn-primary btn-lg" type="submit">{% if update %}Update{% else %}Create{% endif %}</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

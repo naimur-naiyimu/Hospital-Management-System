@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block title %} {{ staff.full_name }} Details{% endblock %}
+{% block content %}
+  <div class="container mt-4">
+    <div class="row">
+      <div class="col-md-6 order-md-1"> <!-- Set order-md to 1 for the photo column -->
+        {% if staff.photo %}
+          <img src="{{ staff.photo.url }}" class="card-img-top" alt="{{ staff.full_name }}" width="400" height="300">
+        {% else %}
+          <div class="text-center py-3">
+            <i class="fas fa-user-circle fa-4x text-secondary"></i>
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-md-6 order-md-2"> 
+        <div class="card-body" style="font-size: 18px; line-height: 0.5; font-family:  sans-serif"> 
+          <h1 class="card-title" style="font-size: 32px; line-height: 1.5;">{{ staff.full_name }}</h1>
+          <p class="card-text">Role: {{ staff.role }}</p>
+          <p class="card-text">Gender: {{ staff.get_gender_display }}</p>
+          <p class="card-text">Date of Birth: {{ staff.date_of_birth }}</p>
+          <p class="card-text">Blood Group: {{ staff.blood_group }}</p>
+          <p class="card-text">Contact: {{ staff.contact_number }}</p>
+          <p class="card-text">Address: {{ staff.address }}</p>
+          <p class="card-text">Salary: {{ staff.salary }}</p>
+          <a href="{% url 'staff:staff-update' staff.pk %}" class="btn btn-warning">Edit</a>
+          <a href="{% url 'staff:staff-delete' staff.pk %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this staff?')">Delete</a>
+        </div>
+        <a href="{% url 'staff:staff-list' %}">Back to staff List</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

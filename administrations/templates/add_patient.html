@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Patient{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4">Add Patient</h1>
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-body">
+          <strong>{{bed.ward}} --> Bed {{ bed.bed_number }}</strong>
+          <br>
+          <form method="post" action="{% url 'administrations:add-patient' pk=bed.pk %}">
+            {% csrf_token %}
+              <label for="patient">Select Patient:</label>
+                <select class="form-control" id="patient" name="patient">
+                  {% for patient in patients %}
+                    <option value="{{ patient.pk }}">{{ patient.full_name }}</option>
+                  {% endfor %}
+                </select>
+            <div class="mt-4 pt-2">
+                <button type="submit" class="btn btn-primary">Add Patient</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      {% comment %} {% if submitted_data %}
+      <div class="card mt-4">
+        <div class="card-body">
+          <h4 class="card-title">Submitted Data</h4>
+          <p><strong>Patient:</strong> {{ submitted_data.patient }}</p>
+          <p><strong>Ward:</strong> {{ submitted_data.ward }}</p>
+          <p><strong>Bed Number:</strong> {{ submitted_data.bed_number }}</p>
+        </div>
+      </div>
+      {% endif %} {% endcomment %}
+    </div>
+  </div>
+</div>
+  <script>
+    $(document).ready(function() {
+        $("#id_patient").select2({
+            placeholder: "Select a patient",
+            width: '100%',
+            allowClear: true,
+        });
+    });
+</script>
+
+{% endblock %}

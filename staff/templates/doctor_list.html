@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Doctor List{% endblock %}
+{% block content %}
+  <div class="container mt-4">
+    <div class="row mb-3">
+      <div class="col">
+        <h1>Doctor List</h1>
+      </div>
+      <div class="col-md-6">
+        <form action="{% url 'staff:doctor-list' %}" method="GET">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search by name, gender, blood group, contact number,Specialization " name="search">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+      <div class="col text-end">
+        <a href="{% url 'staff:doctor-create' %}" class="btn btn-success">Add New Doctor</a>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="btn-group" role="group">
+          <button id="cardViewBtn" class="btn btn-primary">Card View</button>
+          <button id="listViewBtn" class="btn btn-primary">List View</button>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3" id="cardView" style="display: none;">
+       <div class="row mt-3">
+      {% for doctor in doctors %}
+        <div class="col-md-4 mb-4">
+          <div class="card">
+            {% if doctor.photo %}
+              <img src="{{ doctor.photo.url }}" class="card-img-top" alt="{{ doctor.full_name }}">
+            {% else %}
+              <div class="text-center py-3">
+                <i class="fas fa-user-circle fa-4x text-secondary"></i>
+              </div>
+            {% endif %}
+            <div class="card-body" style="font-size: 18px; line-height: 0.5; font-family:  sans-serif">
+              <h5 class="card-title" style="font-size: 32px; line-height: 1.5;">{{ doctor.full_name }}</h5>
+              <p class="card-text">Specialization: {{ doctor.specialization }}</p>
+              <p class="card-text">Gender: {{ doctor.get_gender_display }}</p>
+              <p class="card-text">Contact: {{ doctor.contact_number }}</p>
+              {% if doctor.salary %}
+                <p class="card-text">Salary: {{ doctor.salary }}</p>
+              {% endif %}
+              {% if doctor.fees %}
+                <p class="card-text">Fees: {{ doctor.fees }}</p>
+              {% endif %}
+              <div class="btn-group" role="group">
+                <a href="{% url 'staff:doctor-detail' doctor.pk %}" class="btn btn-primary">View Details</a>
+                <a href="{% url 'staff:doctor-update' doctor.pk %}" class="btn btn-warning">Edit</a>
+                <a href="{% url 'staff:doctor-delete' doctor.pk %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this doctor?')">Delete</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+    </div>
+    <div class="row mt-3" id="listView" >
+      <div class="col">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Specialization</th>
+              <th>Gender</th>
+              <th>Contact</th>
+              <th>Salary</th>
+              <th>Fees</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for doctor in doctors %}
+              <tr>
+                <td>{{ doctor.full_name }}</td>
+                <td>{{ doctor.specialization }}</td>
+                <td>{{ doctor.get_gender_display }}</td>
+                <td>{{ doctor.contact_number }}</td>
+                <td>{% if doctor.salary %}{{ doctor.salary }}{% endif %}</td>
+                <td>{% if doctor.fees %}{{ doctor.fees }}{% endif %}</td>
+                <td>
+                  <a href="{% url 'staff:doctor-detail' doctor.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-eye"></i></a>
+                  <a href="{% url 'staff:doctor-update' doctor.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-edit"></i></a>
+                  <a href="{% url 'staff:doctor-delete' doctor.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-trash"></i></a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    {% if doctors.has_previous or doctors.has_next %}
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if doctors.has_previous %}
+                        <a href="?page=1" class="prev-page"> &lt;&lt; </a>
+                        <a href="?page={{ doctors.previous_page_number }}" class="prev-page"> &lt; </a>
+                    {% endif %}
+                    
+                    <span class="current-page">{{ doctors.number }}</span>
+                    
+                    {% if doctors.has_next %}
+                        <a href="?page={{ doctors.next_page_number }}" class="next-page"> &gt; </a>
+                        <a href="?page={{ doctors.paginator.num_pages }}" class="next-page"> &gt;&gt; </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+  </div>
+  {% endif %}
+  </div>
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cardView = document.getElementById("cardView");
+      const listView = document.getElementById("listView");
+      const cardViewBtn = document.getElementById("cardViewBtn");
+      const listViewBtn = document.getElementById("listViewBtn");
+
+      cardViewBtn.addEventListener("click", function () {
+        cardView.style.display = "block";
+        listView.style.display = "none";
+        cardViewBtn.classList.add("btn-primary");
+        cardViewBtn.classList.remove("btn-secondary");
+        listViewBtn.classList.add("btn-secondary");
+        listViewBtn.classList.remove("btn-primary");
+      });
+
+      listViewBtn.addEventListener("click", function () {
+        cardView.style.display = "none";
+        listView.style.display = "block";
+        listViewBtn.classList.add("btn-primary");1
+        listViewBtn.classList.remove("btn-secondary");
+        cardViewBtn.classList.add("btn-secondary");
+        cardViewBtn.classList.remove("btn-primary");
+      });
+    });
+  </script>
+{% endblock %}

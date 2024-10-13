@@ -1,0 +1,123 @@
+{% extends 'base.html' %}
+{% block title %}{% if update %}Update Patient{% else %}Add Patient{% endif %}{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h3 class="mb-4">{% if update %}Update Patient{% else %}Add New Patient{% endif %}</h3>
+  <form method="post" action="{% if update %}{% url 'patient:patient-update' pk=patient.pk %}{% else %}{% url 'patient:patient-create' %}{% endif %}" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+          {{ form.full_name }}
+          {% for error in form.full_name.errors %}
+          <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.gender.id_for_label }}">Gender</label>
+          {{ form.gender }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
+          {{ form.date_of_birth }}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.blood_group.id_for_label }}">Blood Group</label>
+          {{ form.blood_group }}
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.contact_number.id_for_label }}">Contact Number</label>
+          {{ form.contact_number }}
+          {% for error in form.contact_number.errors %}
+          <p class="text-danger">{{ error }}</p>
+          {% endfor %}
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="form-group">
+          <label for="{{ form.address.id_for_label }}">Address</label>
+          {{ form.address }}
+        </div>
+      </div>
+    </div>
+
+    <!-- Emergency Contact Form -->
+    <hr>
+    <div id="emergencyContactForm">
+      <h4>Emergency Contact</h4>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.emergency_full_name.id_for_label }}">Full Name</label>
+            {{ form.emergency_full_name }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.emergency_gender.id_for_label }}">Gender</label>
+            {{ form.emergency_gender }}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.emergency_contact_number.id_for_label }}">Contact Number</label>
+            {{ form.emergency_contact_number }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.emergency_blood_group.id_for_label }}">Blood Group</label>
+            {{ form.emergency_blood_group }}
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.emergency_address.id_for_label }}">Address</label>
+            {{ form.emergency_address }}
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="{{ form.relation_with_patient.id_for_label }}">Relation with Patient</label>
+            {{ form.relation_with_patient }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Emergency Contact Form End -->
+
+    <div class="mt-4">
+      <button class="btn btn-primary" type="submit">{% if update %}Update{% else %}Submit{% endif %}</button>
+    </div>
+  </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+  $(document).ready(function () {
+    $("#addEmergencyContact").click(function () {
+      $("#emergencyContactForm").toggle();
+    });
+  });
+</script>
+{% endblock %}

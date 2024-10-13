@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Bed List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4">Bed List</h1>
+  <p class="text-danger">N.B.: Red color indicates that the bed is occupied by a patient. Green color indicates that the bed is unoccupied.</p>
+  {% for ward in wards %}
+    <div class="ward mt-4">
+      <h3>Ward {{ ward.ward_number }} - Capacity: {{ ward.capacity }}</h3>
+      <div class="row">
+        {% for bed in ward.bed_set.all %}
+          <div class="col-2 mb-3">
+            <a href="{% url 'administrations:bed_detail' bed.pk %}" class="bed-link">
+              <div class="bed text-center p-3 {% if bed.is_occupied %}bg-danger text-white{% else %}bg-success text-white{% endif %}">
+                {{ bed.bed_number }}
+              </div>
+            </a>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% endblock %}

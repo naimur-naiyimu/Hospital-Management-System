@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Prescription List{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4">Prescription List</h1>
+  <div class="row">
+    <div class="col-md-6">
+        <form action="{% url 'administrations:prescription-list' %}" method="GET">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search by Doctor, patient, contract, date" name="search">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+  <div class="col-md-6 text-right ">
+    <a href="{% url 'administrations:add-prescription'  %}" class="btn btn-success mb-3">Add Prescription</a>
+  </div>
+</div>
+  <table class="table">
+    <thead>
+      <tr>
+        <th scope="col">#</th>
+        <th scope="col">Patient</th>
+        <th scope="col">Doctor</th>
+        <th scope="col">Issue Date</th>
+        <th scope="col">Next Appointment Date</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for prescription in prescriptions %}
+        <tr>
+          <th scope="row">{{ forloop.counter }}</th>
+          <td>{{ prescription.patient }}</td>
+          <td>{{ prescription.doctor }}</td>
+          <td>{{ prescription.issue_date }}</td>
+          <td>{{ prescription.next_appointment_date }}</td>
+          <td>
+            <a href="{% url 'administrations:prescription-detail' prescription_id=prescription.id %}"class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-eye"></i></a>
+            <a href="{% url 'administrations:edit-prescription' prescription_id=prescription.id %}"class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-edit"></i></a>
+            <a href="{% url 'administrations:delete-prescription' prescription_id=prescription.id %}"class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-trash"></i></a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr>
+          <td colspan="6">No prescriptions available.</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+    {% if prescriptions.has_previous or prescriptions.has_next %}
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if prescriptions.has_previous %}
+                        <a href="?page=1" class="prev-page"> &lt;&lt; </a>
+                        <a href="?page={{ prescriptions.previous_page_number }}" class="prev-page"> &lt; </a>
+                    {% endif %}
+                    
+                    <span class="current-page">{{ prescriptions.number }}</span>
+                    
+                    {% if prescriptions.has_next %}
+                        <a href="?page={{ prescriptions.next_page_number }}" class="next-page"> &gt; </a>
+                        <a href="?page={{ prescriptions.paginator.num_pages }}" class="next-page"> &gt;&gt; </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+  </div>
+  {% endif %}
+</div>
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+{% endblock %}

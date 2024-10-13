@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Confirm Appointment Deletion{% endblock %}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card mt-5">
+        <div class="card-header">
+          <h3 class="card-title">Confirm Appointment Deletion</h3>
+        </div>
+        <div class="card-body">
+          <p>Are you sure you want to delete the appointment for {{ appointment.patient.full_name }} with Dr. {{ appointment.doctor.full_name }} on {{ appointment.appointment_date }}?</p>
+          <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Delete</button>
+            <a href="{% url 'administrations:appointment-detail' appointment.pk %}" class="btn btn-secondary">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

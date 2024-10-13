@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Medical Report{% endblock %}
+
+{% block content %}
+  <div class="container py-2 ">
+            <h3 class="mb-4">Add Medical Report</h3>
+            <form method="post" action="{% url 'administrations:add-medical-report' %}">
+              {% csrf_token %}
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <div class="form-outline">
+                      <label class="form-label" for="{{ form.patient.id_for_label }}">Patient:</label>
+                      {{ form.patient }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.test_name.id_for_label }}">Test Name:</label>
+                  {{ form.test_name }}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.test_date.id_for_label }}">Test Date:</label>
+                  {{ form.test_date }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.delivery_date.id_for_label }}">Delivery Date:</label>
+                  {{ form.delivery_date }}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.fee.id_for_label }}">Fees:</label>
+                  {{ form.fee }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.results.id_for_label }}">Results:</label>
+                  {{ form.results }}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.report_file.id_for_label }}">Report File:</label>
+                  {{ form.report_file }}
+                </div>
+              </div>
+              <div class="mt-4 pt-2">
+                <button class="btn btn-primary btn-mb" type="submit">Save</button>
+                <a href="{% url 'administrations:medical-report-list' %}" class="btn btn-secondary btn-mb">Back</a>
+              </div>
+            </form>
+  </div>
+<script>
+    $(document).ready(function() {
+        $("#id_patientm").select2({
+            placeholder: "Select a patient",
+            width: '100%',
+            allowClear: true,
+        });
+    });
+</script>
+{% endblock %}

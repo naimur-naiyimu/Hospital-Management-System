@@ -1,0 +1,6 @@
+<h2>Confirm Deletion</h2>
+<p>Are you sure you want to delete Department {{ ward.department_name }} - Ward {{ ward.ward_number }}?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Yes, Delete</button>
+</form>

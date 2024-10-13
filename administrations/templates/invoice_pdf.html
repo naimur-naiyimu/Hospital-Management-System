@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Invoice PDF{% endblock %}</title>
+</head>
+<body>
+
+<div class="invoice">
+    <div class="row"></div>
+    <div class="row invoice-info">
+        <b>Invoice #{{ invoice.id }}</b><br>
+        <small class="float-right">Date: {{ invoice.invoice_date }} </small>
+        <div class="col-sm-4 invoice-col">
+            To
+            <address>
+                <strong>{{ invoice.patient }}</strong><br>
+                {{ invoice.patient.address }}<br>
+                Mobile: {{ invoice.patient.contact_number }}<br>
+            </address>
+        </div>
+        <div class="col-sm-4 invoice-col">
+            <br>
+            Emargancy Contract: {{ invoice.patient.emergency_full_name }}<br>
+            Mobile: {{ invoice.patient.emergency_contact_number }}
+        </div>
+    <div class="row">
+        <div class="col-12">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th></th>
+                        <th></th>
+                        <th class="text-right">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in invoice.appointments.all %}
+                    <tr>
+                        <td>Appointment Fee:</td>
+                        <td>{{ appointment.doctor.full_name }}</td>
+                        <td>{{ appointment.appointment_date }}</td>
+                        <td class="text-right">{{ appointment.doctor.fees }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if invoice.bed_fee > 0 %}
+                    <tr>
+                        <td>Bed Fee:</td>
+                        <td>Ward No: {{ invoice.patient.allocated_bed.ward.ward_number }}, Bed No: {{ invoice.patient.allocated_bed.bed_number }}</td>
+                        <td>{{ invoice.admission_days }} days * {{ invoice.patient.allocated_bed.ward.fee }} TK</td>
+                        <td class="text-right">{{ invoice.bed_fee }}</td>
+                    </tr>
+                    {% endif %}
+                    {% for medical_report in invoice.medical_reports.all %}
+                    <tr>
+                        <td>Medical Report - {{ medical_report.test_name }}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{ medical_report.fee }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if invoice.custom_data %}
+                    {% for description, amount in invoice.custom_data.items %}
+                    <tr>
+                        <td>{{ description }}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{ amount }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6"> </div>
+        <div class="col-6">
+            <table>
+                <tr>
+                    <th style="width:50%">Subtotal:</th>
+                    <td>{{ invoice.total_amount }}TK</td>
+                </tr>
+                {% if invoice.Discount > 0 %}
+                <tr>
+                    <th>Discount (In percentage):</th>
+                    <td>{{ invoice.Discount }}%</td>
+                </tr>
+                {% endif %}
+                {% if invoice.Discount_flat > 0 %}
+                <tr>
+                    <th>Discount (In flat):</th>
+                    <td>{{ invoice.Discount_flat }}TK</td>
+                </tr>
+                {% endif %}
+                <tr>
+                    <th>Discount Amount:</th>
+                    <td>{{ invoice.discount_amount }}TK</td>
+                </tr>
+                <tr>
+                    <th>Total:</th>
+                    <td><strong>{{ invoice.final_amount }}TK</strong></td>
+                </tr>
+                <tr>
+                    <th>Payment Status:</th>
+                    <td>{% if invoice.is_paid %}<strong>Paid</strong>{% else %}<strong>Unpaid</strong>{% endif %}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+    }
+    .invoice {
+        padding: 20px;
+    }
+    .invoice h4 {
+        font-size: 24px;
+        margin-bottom: 20px;
+    }
+    .invoice-address {
+        margin-bottom: 10px;
+    }
+    .invoice table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+    .invoice th, .invoice td {
+        padding: 10px;
+        text-align: left;
+    }
+    .text-right {
+        text-align: right;
+    }
+</style>
+</body>
+</html>

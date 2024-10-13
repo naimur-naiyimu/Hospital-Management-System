@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Staff List{% endblock %}
+{% block content %}
+  <div class="container mt-4">
+    <div class="row mb-3">
+      <div class="col">
+        <h1>Staff List</h1>
+      </div>
+      <div class="col-md-6">
+        <form action="{% url 'staff:staff-list' %}" method="GET">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search by name, gender, blood group, contact number,role, salary " name="search">
+                <button class="btn btn-primary" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+      <div class="col text-end">
+        <a href="{% url 'staff:staff-create' %}" class="btn btn-success">Add New Staff</a>
+      </div>
+    </div>
+    <div class="row mb-3">
+      <div class="col">
+        <div class="btn-group" role="group">
+          <button id="cardViewBtn" class="btn btn-primary">Card View</button>
+          <button id="listViewBtn" class="btn btn-primary">List View</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="row mt-3" id="listView" >
+      <div class="col">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Gender</th>
+              <th>Contact</th>
+              <th>Salary</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for staff in staffs %}
+              <tr>
+                <td>{{ staff.full_name }}</td>
+                <td>{{ staff.role }}</td>
+                <td>{{ staff.get_gender_display }}</td>
+                <td>{{ staff.contact_number }}</td>
+                <td>{% if staff.salary %}{{ staff.salary }}{% endif %}</td>
+                <td>
+                  <a href="{% url 'staff:staff-detail' staff.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-eye"></i></a>
+                 <a href="{% url 'staff:staff-update' staff.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-edit"></i></a>
+                 <a href="{% url 'staff:staff-delete' staff.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-trash"></i>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="row mt-3" id="cardView" style="display: none;">
+        <div class="row mt-3">
+       {% for staff in staffs %}
+         <div class="col-md-4 mb-4">
+           <div class="card">
+             {% if staff.photo %}
+               <img src="{{ staff.photo.url }}" class="card-img-top" alt="{{ staff.full_name }}">
+             {% else %}
+               <div class="text-center py-3">
+                 <i class="fas fa-user-circle fa-4x text-secondary"></i>
+               </div>
+             {% endif %}
+             <div class="card-body" style="font-size: 18px; line-height: 0.5; font-family:  sans-serif">
+               <h5 class="card-title" style="font-size: 32px; line-height: 1.5;">{{ staff.full_name }}</h5>
+               <p class="card-text">Role: {{ staff.role }}</p>
+               <p class="card-text">Gender: {{ staff.get_gender_display }}</p>
+               <p class="card-text">Contact: {{ staff.contact_number }}</p>
+               <p class="card-text">Salary: {{ staff.salary }}</p>
+               <div class="btn-group" role="group">
+                 <a href="{% url 'staff:staff-detail' staff.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-eye"></i></a>
+                 <a href="{% url 'staff:staff-update' staff.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-edit"></i></a>
+                 <a href="{% url 'staff:staff-delete' staff.pk %}" class="btn btn-circle p-0 m-1 position-relative"><i class="fas fa-trash"></i>
+               </div>
+             </div>
+           </div>
+         </div>
+       {% endfor %}
+     </div>
+     </div>
+
+    {% if staffs.has_previous or staffs.has_next %}
+    <div class="container">
+    <div class="row justify-content-center">
+        <div class="col-auto">
+            <div class="pagination">
+                <span class="step-links">
+                    {% if staffs.has_previous %}
+                        <a href="?page=1" class="prev-page"> &lt;&lt; </a>
+                        <a href="?page={{ staffs.previous_page_number }}" class="prev-page"> &lt; </a>
+                    {% endif %}
+                    
+                    <span class="current-page">{{ staffs.number }}</span>
+                    
+                    {% if staffs.has_next %}
+                        <a href="?page={{ staffs.next_page_number }}" class="next-page"> &gt; </a>
+                        <a href="?page={{ staffs.paginator.num_pages }}" class="next-page"> &gt;&gt; </a>
+                    {% endif %}
+                </span>
+            </div>
+        </div>
+    </div>
+  </div>
+  {% endif %}
+  </div>
+  <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const cardView = document.getElementById("cardView");
+      const listView = document.getElementById("listView");
+      const cardViewBtn = document.getElementById("cardViewBtn");
+      const listViewBtn = document.getElementById("listViewBtn");
+
+      cardViewBtn.addEventListener("click", function () {
+        cardView.style.display = "block";
+        listView.style.display = "none";
+        cardViewBtn.classList.add("btn-primary");
+        cardViewBtn.classList.remove("btn-secondary");
+        listViewBtn.classList.add("btn-secondary");
+        listViewBtn.classList.remove("btn-primary");
+      });
+
+      listViewBtn.addEventListener("click", function () {
+        cardView.style.display = "none";
+        listView.style.display = "block";
+        listViewBtn.classList.add("btn-primary");
+        listViewBtn.classList.remove("btn-secondary");
+        cardViewBtn.classList.add("btn-secondary");
+        cardViewBtn.classList.remove("btn-primary");
+      });
+    });
+  </script>
+{% endblock %}

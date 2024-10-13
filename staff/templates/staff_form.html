@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}  {% if update %}Update Staff{% else %}Add Staff{% endif %}{% endblock %}
+{% block content %}
+<div class="containerpy-5">
+      <h3 class="mb-4">{% if update %}Update Staff{% else %}Staff Add Form{% endif %}</h3>
+      <form method="post" action="{% if update %}{% url 'staff:staff-update' pk=staff.pk %}{% else %}{% url 'staff:staff-create' %}{% endif %}" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.full_name.id_for_label }}">Full Name</label>
+              {{ form.full_name }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.gender.id_for_label }}">Gender</label>
+              {{ form.gender }}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.date_of_birth.id_for_label }}">Date of Birth</label>
+              {{ form.date_of_birth }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.blood_group.id_for_label }}">Blood Group</label>
+              {{ form.blood_group }}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.contact_number.id_for_label }}">Contact Number</label>
+              {{ form.contact_number }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.photo.id_for_label }}">Photo</label>
+              {{ form.photo }}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-12">
+            <div class="form-group">
+              <label for="{{ form.address.id_for_label }}">Address</label>
+              {{ form.address }}
+            </div>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.role.id_for_label }}">Role</label>
+              {{ form.role }}
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="form-group">
+              <label for="{{ form.salary.id_for_label }}">Salary</label>
+              {{ form.salary }}
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 text-center">
+          <button class="btn btn-primary btn-lg" type="submit">{% if update %}Update{% else %}Submit{% endif %}</button>
+        </div>
+      </form>
+</div>
+{% endblock %}

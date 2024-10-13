@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Medical Report{% endblock %}
+
+{% block content %}
+<section class="vh-100 gradient-custom">
+  <div class="container py-2 h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-12 col-lg-12 col-xl-10">
+        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+          <div class="card-body p-2 p-md-4">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-4">Edit Medical Report</h3>
+            <form method="post">
+              {% csrf_token %}
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.patient.id_for_label }}">Patient:</label>
+                  {{ form.patient }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.test_name.id_for_label }}">Test Name:</label>
+                  {{ form.test_name }}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.test_date.id_for_label }}">Test Date:</label>
+                  {{ form.test_date }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.delivery_date.id_for_label }}">Delivery Date:</label>
+                  {{ form.delivery_date }}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.fee.id_for_label }}">Fees:</label>
+                  {{ form.fee }}
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.results.id_for_label }}">Results:</label>
+                  {{ form.results }}
+                </div>
+              </div>
+              <div class="row mb-3">
+                <div class="col-md-6">
+                  <label class="form-label" for="{{ form.report_file.id_for_label }}">Report File:</label>
+                  {{ form.report_file }}
+                </div>
+              </div>
+              <div class="mt-4 pt-2">
+                <button class="btn btn-primary btn-lg" type="submit">Save Changes</button>
+                <a href="{% url 'administrations:medical-report-detail' report_id=medical_report.id %}" class="btn btn-secondary btn-lg">Cancel</a>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

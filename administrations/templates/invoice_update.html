@@ -1,0 +1,212 @@
+{% extends 'base.html' %}
+{% block title %}Update Invoice{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> AdminLTE, Inc.
+                    <small class="float-right">Date: {{ invoice.invoice_date }} </small>
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+            <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+                  To
+                  <address>
+                    <strong>{{ invoice.patient }}</strong><br>
+                    {{ invoice.patient.address }}<br>
+                    Mobile: {{ invoice.patient.contact_number }}<br>
+                  </address>
+                </div>
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <b>Invoice #{{ invoice.id }}</b><br>
+                  <br>
+                  Emargancy Contract: {{ invoice.patient.emergency_full_name }}<br>
+                  Mobile: {{ invoice.patient.emergency_contact_number }}
+                </div>
+                <!-- /.col -->
+              </div>
+    <form method="post" action="{% url 'administrations:update-invoice' invoice_id=invoice.id %}">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-12 table-responsive">
+            <table id="invoice-table" class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th></th>
+                        <th></th>
+                        <th>Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for appointment in invoice.appointments.all %}
+                    <tr>
+                        <td>Appointment Fee:</td>
+                        <td>Doctor: {{appointment.doctor.full_name}}</td>
+                        <td>Date: {{appointment.appointment_date}}</td>
+                        <td class="text-right">{{ appointment.doctor.fees }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% if invoice.bed_fee > 0 %}
+                    <tr>
+                        <td>Bed Fee: </td>
+                        <td>Ward No : {{ invoice.patient.allocated_bed.ward.ward_number }}, Bed No: {{ invoice.patient.allocated_bed.bed_number }}</td>
+                        <td>{{ invoice.admission_days }} days * {{invoice.patient.allocated_bed.ward.fee }} TK</td>
+                        <td class="text-right">{{ invoice.bed_fee }}</td>
+                    </tr>
+                    {% endif %}
+                    {% for medical_report in invoice.medical_reports.all %}
+                    <tr>
+                        <td>Medical Report - {{ medical_report.test_name }}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{ medical_report.fee }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    {% if invoice.custom_data %}
+                    {% for description, amount in invoice.custom_data.items %}
+                    <tr>
+                        <td>{{ description }}</td>
+                        <td></td>
+                        <td></td>
+                        <td class="text-right">{{ amount }}</td>
+                    </tr>
+                    {% endfor %}
+                    {% endif %}
+
+                    <tr id="template-row" style="display: none;">
+                        <td><input type="text" name="description[]" class="form-control"></td>
+                        <td></td>
+                        <td></td>
+                        <td><input type="number"  name="amount[]" class="form-control"></td>
+                        <td><button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fas fa-trash"></i></button></td>
+                    </tr>
+                </tbody>
+              </table>
+              <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h1 class="mb-0"></h1>
+                  <button type="button" class="btn btn-success" onclick="addRow()"><i class="fas fa-plus"></i></button>
+              </div>
+                <div class="row">
+                        <!-- /.col -->
+                        <div class="col-6"> </div>
+                        <div class="col-6">
+
+                          <div class="table-responsive">
+                            <table class="table">
+                              <tr>
+                                <th style="width:50%">Subtotal:</th>
+                                <td id="subtotal">{{ invoice.total_amount }}</td>
+                              </tr>
+                              <tr>
+                                <th>Discount(In percentage):</th>
+                                <td>
+                                  <div class="d-flex justify-content">
+                                      <input type="number" step="1" class="form-control" id="discount-input" name="Discount" value="{{ invoice.Discount }}" style="width: 100px;">
+                                      <span>%</span>
+                                    </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <th>Discount(In Flat):</th>
+                                <td>
+                                  <div class="d-flex justify-content">
+                                      <input type="number" step="1" class="form-control" id="Discount_flat" name="Discount_flat" value="{{ invoice.Discount_flat }}" style="width: 100px;">
+                                      <span>TK</span>
+                                    </div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>Discount Amount:</td>
+                                <td id="discount-amount">
+                                {{ invoice.discount_amount }}
+                            </td>
+                              </tr>
+                              <tr>
+                                <td><strong>Total Amount</strong></td>
+                                <td id="final-amount">
+                                  <strong>{{ invoice.final_amount }}</strong>
+                                </td>
+                              </tr>
+                            <tr>
+                            <th><strong>Payment Status</strong></th>
+                            <td colspan="2">
+                                <select name="is_paid" class="form-control">
+                                    <option value="paid" {% if invoice.is_paid %}selected{% endif %}>Paid</option>
+                                    <option value="unpaid" {% if not invoice.is_paid %}selected{% endif %}>Unpaid</option>
+                                </select>
+                            </td>
+                        </tr>
+                            </table>
+                          </div>
+                        </div>
+                <button type="submit" class="btn btn-primary float-right">Update Invoice</button>
+            </form>
+        </div>
+<script>
+    const discountInput = document.getElementById('discount-input');
+    const discountAmount = document.getElementById('discount-amount');
+    const finalAmount = document.getElementById('final-amount');
+    const subtotalElement = document.getElementById('subtotal');
+    let subtotal1 = parseFloat(subtotalElement.textContent) || 0;
+    let subtotal = 0;
+
+    function updateSubtotal() {
+        const amountInputs = document.querySelectorAll("input[name='amount[]']");
+
+        amountInputs.forEach(function(input) {
+            const amount = parseFloat(input.value) || 0;
+            subtotal += amount;
+        });
+        subtotal += subtotal1;
+        subtotalElement.textContent = subtotal.toFixed(2);
+        subtotal = 0;
+    }
+
+    function addRow() {
+        var table = document.getElementById("invoice-table");
+        var templateRow = document.getElementById("template-row");
+        var newRow = templateRow.cloneNode(true);
+        newRow.removeAttribute("id");
+        newRow.style.display = "table-row";
+        table.querySelector("tbody").appendChild(newRow);
+
+        // Add event listener for the new amount input
+        const newAmountInput = newRow.querySelector("input[name='amount[]']");
+        newAmountInput.addEventListener("input", updateSubtotal);
+        newAmountInput.addEventListener('input', calculateFinalAmount);
+    }
+
+    function removeRow(button) {
+        var row = button.closest("tr");
+        row.remove();
+        updateSubtotal();
+    }
+    // Function to calculate the final amount based on the discount percentage and flat discount
+    function calculateFinalAmount() {
+        const discountPercentage = parseFloat(discountInput.value) || 0;
+        const discountFlat = parseFloat(document.getElementById('Discount_flat').value) || 0;
+        const totalAmount = parseFloat(subtotalElement.textContent) || 0;
+
+        const calculatedDiscountPercentage = (totalAmount * discountPercentage) / 100;
+
+        const calculatedFinalAmount = totalAmount - calculatedDiscountPercentage - discountFlat;
+
+        discountAmount.textContent = (calculatedDiscountPercentage + discountFlat).toFixed(2);
+        finalAmount.textContent = calculatedFinalAmount.toFixed(2);
+    }
+
+    // Add an initial call to calculateFinalAmount to handle the initial page load
+    calculateFinalAmount();
+
+    // Add event listeners to the discount input and Discount_flat input to handle changes
+    discountInput.addEventListener('input', calculateFinalAmount);
+    document.getElementById('Discount_flat').addEventListener('input', calculateFinalAmount);
+
+</script>
+{% endblock %}

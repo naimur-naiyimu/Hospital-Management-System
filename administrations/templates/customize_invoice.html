@@ -1,0 +1,153 @@
+{% extends 'base.html' %}
+{% block title %}Customize Invoice{% endblock %}
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> AdminLTE, Inc.
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+            <div class="row invoice-info">
+                <div class="col-sm-4 invoice-col">
+
+                  <address>
+                  <div class="form-group">
+                    <label for="patient">Select Patient:</label>
+                    <select class="form-control" id="patient" name="patient">
+                      {% for patient in patients %}
+                        <option value="{{ patient.pk }}">{{ patient.full_name }}</option>
+                      {% endfor %}
+                    </select>
+                  </div>
+                    
+                  </address>
+                </div>
+                <!-- /.col -->
+                <!-- /.col -->
+              </div>
+    <form method="post" action="{% url 'administrations:customize-invoice'  %}">
+        {% csrf_token %}
+<div class="row">
+    <div class="col-12 table-responsive">
+      <table id="invoice-table" class="table">
+          <thead>
+              <tr>
+                  <th>Description</th>
+                  <th>Amount</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr id="template-row" style="display: none;">
+                  <td><input type="text" name="description[]" class="form-control"></td>
+                  <td><input type="number"  name="amount[]" class="form-control"></td>
+                  <td><button type="button" class="btn btn-danger" onclick="removeRow(this)"><i class="fas fa-trash"></i></button></td>
+              </tr>
+          </tbody>
+      </table>
+
+      <div class="d-flex justify-content-between align-items-center mb-3">
+          <h1 class="mb-0"></h1>
+          <button type="button" class="btn btn-success" onclick="addRow()"><i class="fas fa-plus"></i></button>
+      </div>
+
+        <div class="row">
+                <!-- /.col -->
+                <div class="col-6"> </div>
+                <div class="col-6">
+
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th style="width:50%">Subtotal:</th>
+                        <td id="subtotal">100.00</td>
+                      </tr>
+                      <tr>
+                        <th>Discount:</th>
+                        <td>
+                        <div class="d-flex justify-content">
+                            <input type="number" step="0.5" class="form-control" id="discount-input" name="Discount" value="{{ invoice.Discount }}" style="width: 100px;">
+                        </div>
+                    </td>
+                      </tr>
+                      <tr>
+                        <td>Discount Amount:</td>
+                        <td id="discount-amount">
+                        {{ invoice.discount_amount }}
+                    </td>
+                      </tr>
+                      <tr>
+                        <td><strong>Total Amount</strong></td>
+                        <td id="final-amount">
+                        <strong>{{ invoice.final_amount }}</strong>
+                    </td>
+                      </tr>
+                    <tr>
+                    <th><strong>Payment Status</strong></th>
+                    <td colspan="2">
+                        <select name="is_paid" class="form-control">
+                            <option value="paid" {% if invoice.is_paid %}selected{% endif %}>Paid</option>
+                            <option value="unpaid" {% if not invoice.is_paid %}selected{% endif %}>Unpaid</option>
+                        </select>
+                    </td>
+                </tr>
+                    </table>
+                  </div>
+                </div>
+        <button type="submit" class="btn btn-primary float-right">Create Invoice</button>
+    </form>
+</div>
+<script>
+    const discountInput = document.getElementById('discount-input');
+    const discountAmount = document.getElementById('discount-amount');
+    const finalAmount = document.getElementById('final-amount');
+    const subtotalElement = document.getElementById('subtotal');
+    let subtotal1 = parseFloat(subtotalElement.textContent) || 0;
+
+    discountInput.addEventListener('input', function() {
+        const discountPercentage = parseFloat(discountInput.value) || 0;
+        const totalAmount = parseFloat(subtotalElement.textContent) || 0;
+
+        const calculatedDiscount = (totalAmount * discountPercentage) / 100;
+        const calculatedFinalAmount = totalAmount - calculatedDiscount;
+
+        discountAmount.textContent = calculatedDiscount.toFixed(2);
+        finalAmount.textContent = calculatedFinalAmount.toFixed(2);
+    });
+
+    function updateSubtotal() {
+        const amountInputs = document.querySelectorAll("input[name='amount[]']");
+        let subtotal = 0;
+
+        amountInputs.forEach(function(input) {
+            const amount = parseFloat(input.value) || 0;
+            subtotal += amount;
+        });
+        subtotal += subtotal1;
+        subtotalElement.textContent = subtotal.toFixed(2);
+    }
+
+    function addRow() {
+        var table = document.getElementById("invoice-table");
+        var templateRow = document.getElementById("template-row");
+        var newRow = templateRow.cloneNode(true);
+        newRow.removeAttribute("id");
+        newRow.style.display = "table-row";
+        table.querySelector("tbody").appendChild(newRow);
+
+        // Add event listener for the new amount input
+        const newAmountInput = newRow.querySelector("input[name='amount[]']");
+        newAmountInput.addEventListener("input", updateSubtotal);
+    }
+
+    function removeRow(button) {
+        var row = button.closest("tr");
+        row.remove();
+        updateSubtotal();
+    }
+</script>
+
+
+{% endblock %}

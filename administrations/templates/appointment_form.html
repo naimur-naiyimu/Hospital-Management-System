@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block title %}
+  {% if update %}
+    Update Appointment
+  {% else %}
+    Create Appointment
+  {% endif %}
+{% endblock %}
+{% block content %}
+  <div class="container py-5">
+        <h3 class="mb-4">{% if update %}Update Appointment{% else %}Create Appointment{% endif %}</h3>
+        <form method="post" action="{% if update %}{% url 'administrations:appointment-update' pk=appointment.pk %}{% else %}{% url 'administrations:appointment-create' %}{% endif %}">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="id_patienta" class="form-label">Select a Patient</label>
+                {{ form.patient }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="id_doctor" class="form-label">Select a Doctor</label>
+                {{ form.doctor }}
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="id_appointment_date" class="form-label">Appointment Date and Time</label>
+                {{ form.appointment_date }}
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="id_status" class="form-label">Status</label>
+                {{ form.status }}
+              </div>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label for="id_symptoms" class="form-label">Symptoms</label>
+            {{ form.symptoms }}
+          </div>
+          <div class="mt-4 pt-2">
+            <button class="btn btn-primary btn-lg" type="submit">{% if update %}Update{% else %}Create{% endif %}</button>
+          </div>
+        </form>
+  </div>
+
+<script>
+  $(document).ready(function() {
+      $("#id_patienta").select2({
+          placeholder: "Select a patient",
+          width: '100%',
+          allowClear: true,
+      });
+  });
+  $(document).ready(function() {
+      $("#id_doctor").select2({
+          placeholder: "Select a Doctor",
+          width: '100%',
+          allowClear: true,
+      });
+  });
+</script>
+{% endblock %}

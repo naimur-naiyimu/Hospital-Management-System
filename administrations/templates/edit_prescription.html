@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}Edit Prescription{% endblock %}
+
+{% block content %}
+<h1>Edit Prescription for {{ prescription.patient.full_name }}</h1>
+
+<form method="post">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>
+
+<a href="{% url 'administrations:prescription-detail'  prescription_id=prescription.id %}" class="btn btn-secondary mt-3">Back to Prescription Detail</a>
+{% endblock %}

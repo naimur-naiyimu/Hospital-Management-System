@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}Delete Medical Report{% endblock %}
+
+{% block content %}
+<h1>Delete Medical Report</h1>
+
+<p>Are you sure you want to delete the following medical report?</p>
+<p><strong>Patient:</strong> {{ medical_report.patient }}</p>
+<p><strong>Doctor:</strong> {{ medical_report.doctor }}</p>
+<p><strong>Report Date:</strong> {{ medical_report.report_date }}</p>
+
+<form method="post">
+  {% csrf_token %}
+  <button type="submit" class="btn btn-danger">Delete</button>
+</form>
+
+<a href="{% url 'administrations:medical-report-detail' report_id=medical_report.id %}" class="btn btn-secondary mt-3">Cancel</a>
+{% endblock %}

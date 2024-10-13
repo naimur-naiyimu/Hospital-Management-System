@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}Bed Detail{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h1 class="mt-4">Bed Detail</h1>
+  <div class="row">
+    <div class="col-md-6 offset-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h4 class="card-title">Bed {{ bed.bed_number }}</h4>
+          <br>
+          <p>Ward: {{ bed.ward }}</p>
+          <p>Occupancy: {% if bed.is_occupied %}Occupied{% else %}Available{% endif %}</p>
+          {% if bed.is_occupied %}
+            <h5>Patient Details:</h5>
+            <p>Name: {{ patient.full_name }}</p>
+            <p>Contact: {{ patient.contact_number }}</p>
+            <p>Patient ID: {{ patient.pk }}</p>
+            <a href="{% url 'patient:patient-detail' pk=patient.pk %}" class="btn btn-sm btn-primary">Patient Details</a>
+            <a href="{% url 'administrations:add-patient' pk=bed.pk %}" class="btn btn-sm btn-danger">Relase Patient</a>
+          {% else %}
+            {% if not bed.is_occupied %}
+            <a href="{% url 'administrations:add-patient' pk=bed.pk %}" class="btn btn-sm btn-success">Add Patient</a>
+            {% endif %}
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% block title %}Invoice Details{% endblock %}
+{% block content %}
+<div class="invoice p-3 mb-3">
+    <div class="row">
+                <div class="col-12">
+                  <h4>
+                    <i class="fas fa-globe"></i> AdminLTE, Inc.
+                    <small class="float-right">Date: {{ invoice.invoice_date }} </small>
+                  </h4>
+                </div>
+                <!-- /.col -->
+              </div>
+            <div class="row invoice-info">
+                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  To
+                  <address>
+                    <strong>{{ invoice.patient }}</strong><br>
+                    {{ invoice.patient.address }}<br>
+                    Mobile: {{ invoice.patient.contact_number }}<br>
+                  </address>
+                </div>
+                                <!-- /.col -->
+                <div class="col-sm-4 invoice-col">
+                  <b>Invoice #{{ invoice.id }}</b><br>
+                  <br>
+                  Emargancy Contract: {{ invoice.patient.emergency_full_name }}<br>
+                  Mobile: {{ invoice.patient.emergency_contact_number }}
+                </div>
+                <!-- /.col -->
+              </div>
+                <div class="row">
+                    <div class="col-12 table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Description</th>
+                                <th class="text-right">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for appointment in invoice.appointments.all %}
+                            <tr>
+                                <td>Appointment Fee:</td>
+                                <td>Doctor: {{appointment.doctor.full_name}}</td>
+                                <td>Date: {{appointment.appointment_date}}</td>
+                                <td class="text-right">{{ appointment.doctor.fees }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% if invoice.bed_fee > 0 %}
+                            <tr>
+                                <td>Bed Fee: </td>
+                                <td>Ward No : {{ invoice.patient.allocated_bed.ward.ward_number }}, Bed No: {{ invoice.patient.allocated_bed.bed_number }}</td>
+                                <td>{{ invoice.admission_days }} days * {{invoice.patient.allocated_bed.ward.fee }} TK</td>
+                                <td class="text-right">{{ invoice.bed_fee }}</td>
+                            </tr>
+                            {% endif %}
+
+                            {% for medical_report in invoice.medical_reports.all %}
+                            <tr>
+                                <td>Medical Report - {{ medical_report.test_name }}</td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right">{{ medical_report.fee }}</td>
+                            </tr>
+                            {% endfor %}
+
+                            {% if invoice.custom_data %}
+                            {% for description, amount in invoice.custom_data.items %}
+                            <tr>
+                                <td>{{ description }}</td>
+                                <td></td>
+                                <td></td>
+                                <td class="text-right">{{ amount }}</td>
+                            </tr>
+                            {% endfor %}
+                            {% endif %}
+
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+
+              <div class="row">
+                <!-- /.col -->
+                <div class="col-6"> </div>
+                <div class="col-6">
+
+                  <div class="table-responsive">
+                    <table class="table">
+                      <tr>
+                        <th style="width:50%">Subtotal:</th>
+                        <td>{{ invoice.total_amount }}TK</td>
+                      </tr>
+                      {% if invoice.Discount > 0 %}
+                        <tr>
+                          <th>Discount(In percentage):</th>
+                          <td>{{ invoice.Discount }}%</td>
+                        </tr>
+                      {%endif%}
+                      {% if invoice.Discount_flat > 0 %}
+                        <tr>
+                          <th>Discount(In flat):</th>
+                          <td>{{ invoice.Discount_flat }}TK</td>
+                        </tr>
+                      {%endif%}
+                      <tr>
+                        <th>Discount Amount:</th>
+                        <td>{{ invoice.discount_amount}}TK</td>
+                      </tr>
+                      <tr>
+                        <th>Total:</th>
+                        <td>{{ invoice.final_amount }}TK</td>
+                      </tr>
+                      <tr>
+                        <th>Payment Status:</th>
+                        {% if invoice.is_paid %}
+                        <td> <strong>Paid</strong> </td> 
+                        {% else %}
+                        <td><strong>Unpaid<strong></td>
+                        {% endif %}
+                      </tr>
+                    </table>
+                  </div>
+                </div>
+                <!-- /.col -->
+              </div>
+              <div class="row no-print">
+                <div class="col-12">
+                  <a href="{% url 'administrations:invoice-print' invoice_id=invoice.id %}" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                  <a href="#" class="btn btn-default position-relative" data-toggle="modal" data-target="#deleteInvoiceConfirmationModal"><i class="fas fa-trash"></i>Delete</a>
+                    <!-- Delete Confirmation Modal -->
+                    <div class="modal fade" id="deleteInvoiceConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="deleteInvoiceConfirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteInvoiceConfirmationModalLabel">Delete Confirmation</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure you want to delete this invoice?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <form action="{% url 'administrations:invoice-delete' invoice.id %}" method="post" style="display: inline;">
+                                        {% csrf_token %}
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- End Delete Confirmation Modal -->
+                  <button type="button" class="btn btn-success float-right"><i class="far fa-credit-card"></i> Submit
+                    Payment
+                  </button>
+                  <a href="{% url 'administrations:generate-pdf' invoice_id=invoice.id %}">
+                  <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                    <i class="fas fa-download"></i> Generate PDF
+                  </button>
+
+                </div>
+              </div>
+</div>
+{% endblock %}

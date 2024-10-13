@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Add Prescription{% endblock %}
+
+{% block content %}
+  <div class="container py-2 h-100">
+    <div class="row justify-content-center align-items-center h-100">
+      <div class="col-12 col-lg-12 col-xl-8">
+        <div class="card shadow-2-strong card-registration" style="border-radius: 15px;">
+          <div class="card-body p-2 p-md-4">
+            <h3 class="mb-4 pb-2 pb-md-0 mb-md-4">Add Prescription</h3>
+            <form method="post">
+              {% csrf_token %}
+              <div class="row">
+                <div class="col-md-5">
+                  <div class="form-outline">
+                      <label class="form-label" for="{{ form.patient.id_for_label }}">Patient:</label>
+                      {{ form.patient }}
+                  </div>
+                </div>
+                <div class="col-md-5">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.doctor.id_for_label }}">Doctor:</label>
+                    {{ form.doctor }}
+                  </div>
+                </div>
+              <div class="row">
+                <div class="col-md-6">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.issue_date.id_for_label }}">Issue date:</label>
+                    {{ form.issue_date }}
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.next_appointment_date.id_for_label }}">Next appointment date:</label>
+                    {{ form.next_appointment_date }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12-md-6">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.medication.id_for_label }}">Medication:</label>
+                    {{ form.medication }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12-md-6">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.dosage.id_for_label }}">Dosage:</label>
+                    {{ form.dosage }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12-md-6">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.test.id_for_label }}">Test:</label>
+                    {{ form.test }}
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-12-md-6">
+                  <div class="form-outline">
+                    <label class="form-label" for="{{ form.instructions.id_for_label }}">Instructions:</label>
+                    {{ form.instructions }}
+                  </div>
+                </div>
+            </div>
+              <div class="mt-4 pt-2">
+                <button class="btn btn-primary btn-lg" type="submit">Save Prescription</button>
+                <a href="{% url 'administrations:prescription-list'  %}" class="btn btn-secondary btn-lg">Back to Prescription List</a>
+              </div> 
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+    <script>
+      $(document).ready(function() {
+          $("#id_patient").select2({
+              placeholder: "Select a patient",
+              width: '100%',
+              allowClear: true,
+          });
+      });
+      $(document).ready(function() {
+          $("#id_doctor").select2({
+              placeholder: "Select a Doctor",
+              width: '100%',
+              allowClear: true,
+          });
+      });
+  </script>
+
+{% endblock %}
