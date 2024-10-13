@@ -108,7 +108,7 @@ REST_FRAMEWORK = {
     # 'EXCEPTION_HANDLER': 'Config.api.exceptions.api_500_handler',
 
 }
-STATICFILES_STORAGE = 'hospital-management-system.Config.custom_storage.CustomStaticFilesStorage'
+STATICFILES_STORAGE = 'Config.custom_storage.CustomStaticFilesStorage'
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Bufify API',
     'DESCRIPTION': 'An Bug Tracking Solution',
