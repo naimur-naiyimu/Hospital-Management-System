@@ -75,6 +75,9 @@ class CustomStaticFilesStorage(CompressedManifestStaticFilesStorage):
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
+WHITENOISE_USE_FINDERS = True
+WHITENOISE_MISSING_FILES_ERROR = False
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
