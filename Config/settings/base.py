@@ -60,19 +60,6 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'Config.urls'
 
 
-class CustomStaticFilesStorage(CompressedManifestStaticFilesStorage):
-    def post_process(self, paths, dry_run=False, **options):
-        # Call the parent method and handle MissingFileError
-        try:
-            return super().post_process(paths, dry_run, **options)
-        except Exception as e:
-            if isinstance(e, MissingFileError):
-                # Log the missing file but do not raise the error
-                print(f"Ignored missing file error: {e}")
-                return []  # Return an empty list for missing files
-            raise  # Raise any other exceptions
-
-STATICFILES_STORAGE = 'Config.custom_storage.CustomStaticFilesStorage'
 
 WHITENOISE_USE_FINDERS = True
 WHITENOISE_MISSING_FILES_ERROR = False
@@ -121,7 +108,7 @@ REST_FRAMEWORK = {
     # 'EXCEPTION_HANDLER': 'Config.api.exceptions.api_500_handler',
 
 }
-
+STATICFILES_STORAGE = 'Config.custom_storage.CustomStaticFilesStorage'
 SPECTACULAR_SETTINGS = {
     'TITLE': 'Bufify API',
     'DESCRIPTION': 'An Bug Tracking Solution',

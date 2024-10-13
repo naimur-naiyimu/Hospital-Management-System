@@ -27,7 +27,7 @@ MIDDLEWARE = [
     'Config.middleware.CustomMiddleWare',
     'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
