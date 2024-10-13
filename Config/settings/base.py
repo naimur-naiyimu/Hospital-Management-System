@@ -58,19 +58,23 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'Config.urls'
+from django.contrib.staticfiles.storage import StaticFilesStorage
 from whitenoise.storage import CompressedManifestStaticFilesStorage
 
-class CustomCompressedManifestStaticFilesStorage(CompressedManifestStaticFilesStorage):
+class CustomStaticFilesStorage(CompressedManifestStaticFilesStorage):
     def post_process(self, paths, dry_run=False, **options):
-        # Call the parent method and catch any MissingFileError
+        # Call the parent method and handle MissingFileError
         try:
             return super().post_process(paths, dry_run, **options)
-        except MissingFileError:
-            # Log the missing file error or ignore it
-            return []
+        except Exception as e:
+            if isinstance(e, MissingFileError):
+                # Log the missing file but do not raise the error
+                print(f"Ignored missing file error: {e}")
+                return []  # Return an empty list for missing files
+            raise  # Raise any other exceptions
 
-# Then, set this custom storage in your settings
-STATICFILES_STORAGE = 'path.to.CustomCompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
