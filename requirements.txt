@@ -287,3 +287,5 @@ yarl==1.9.1
 zebra==0.1.0
 zopfli==0.2.2
 zplgrf==1.6.0
+Django>=3.2,<4.0
+gunicorn>=20.0.4
